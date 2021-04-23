@@ -1,0 +1,203 @@
+# Used https://betterprogramming.pub/ldap-docker-image-with-populated-users-3a5b4d090aa4
+# to make this ldif file
+# https://ldapwiki.com/wiki/Group
+
+# ----- Top Level Groups ------
+
+dn: ou=Groups,dc=magicdollar,dc=com
+changetype: add
+objectclass: organizationalUnit
+ou: Groups
+member: cn=Legal,ou=Groups,dc=magicdollar,dc=com
+member: cn=Engineering,ou=Groups,dc=magicdollar,dc=com
+member: cn=IT,ou=Groups,dc=magicdollar,dc=com
+member: cn=Sales and Marketing,ou=Groups,dc=magicdollar,dc=com
+
+dn: ou=Users,dc=magicdollar,dc=com
+changetype: add
+objectclass: organizationalUnit
+ou: Users
+
+dn: ou=Roles,dc=magicdollar,dc=com
+changetype: add
+objectclass: organizationalUnit
+ou: Roles
+
+dn: ou=Devices,dc=magicdollar,dc=com
+changetype: add
+objectclass: organizationalUnit
+ou: Devices
+
+# ----- Users -----
+
+dn: cn=gillian,ou=Users,dc=magicdollar,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: gillian
+givenname: gillian
+sn: Gillian
+displayname: Gillian
+mail: gillian@magicdollar.com
+userpassword: tITHFMbX9ZOh
+
+dn: cn=logan,ou=Users,dc=magicdollar,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: logan
+givenname: logan
+sn: Logan
+displayname: Logan
+mail: logan@magicdollar.com
+userpassword: Y13DuJ8devn4
+
+dn: cn=sean,ou=Users,dc=magicdollar,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: sean
+givenname: sean
+sn: Sean
+displayname: Sean
+mail: sean@magicdollar.com
+userpassword: u1YQeHLCZQxw
+
+dn: cn=margo,ou=Users,dc=magicdollar,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: margo
+givenname: margo
+sn: Margo
+displayname: Margo
+mail: margo@magicdollar.com
+userpassword: 2OL8Ko3X9lnX
+
+dn: cn=jordan,ou=Users,dc=magicdollar,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: jordan
+givenname: jordan
+sn: Jordan
+displayname: Jordan
+mail: jordan@magicdollar.com
+userpassword: 0VGGPX7wVrpR
+
+dn: cn=bridget,ou=Users,dc=magicdollar,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: bridget
+givenname: bridget
+sn: Bridget
+displayname: Bridget
+mail: bridget@magicdollar.com
+userpassword: YvzBUpd4Vha7
+
+dn: cn=ruth,ou=Users,dc=magicdollar,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: ruth
+givenname: ruth
+sn: Ruth
+displayname: Ruth
+mail: ruth@magicdollar.com
+userpassword: 94fxySNIirkv
+
+dn: cn=lucas,ou=Users,dc=magicdollar,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: lucas
+givenname: lucas
+sn: Lucas
+displayname: Lucas
+mail: lucas@magicdollar.com
+userpassword: QcC1TWXlrkxC
+
+dn: cn=chanda,ou=Users,dc=magicdollar,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: chanda
+givenname: chanda
+sn: Chanda
+displayname: Chanda
+mail: chanda@magicdollar.com
+userpassword: sv0QecxHGYEN
+
+dn: cn=ignacio,ou=Users,dc=magicdollar,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: ignacio
+givenname: ignacio
+sn: Ignacio
+displayname: Ignacio
+mail: ignacio@magicdollar.com
+userpassword: W3YS3RNqoXSA
+
+dn: cn=jennifer,ou=Users,dc=magicdollar,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: jennifer
+givenname: jennifer
+sn: Jennifer
+displayname: Jennifer
+mail: jennifer@magicdollar.com
+userpassword: p5J4mLC7J2Hh
+
+dn: cn=miles,ou=Users,dc=magicdollar,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: miles
+givenname: miles
+sn: Miles
+displayname: Miles
+mail: miles@magicdollar.com
+userpassword: LnTo7GYZYcjy
+
+dn: cn=archer,ou=Users,dc=magicdollar,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: archer
+givenname: archer
+sn: Archer
+displayname: Archer
+mail: archer@magicdollar.com
+userpassword: hT89a4Szqe0m
+
+# ---- Roles ----
+
+dn: cn=President,ou=Roles,dc=magicdollar,dc=com
+changetype: add
+cn: President
+objectclass: groupOfUniqueNames
+uniqueMember: cn=gillian,ou=Users,dc=magicdollar,dc=com
+
+# ---- Groups ----
+
+dn: cn=Legal,ou=Groups,dc=magicdollar,dc=com
+changetype: add
+cn: Legal
+objectclass: groupOfUniqueNames
+uniqueMember: cn=logan,ou=Users,dc=magicdollar,dc=com
+
+dn: cn=Engineering,ou=Groups,dc=magicdollar,dc=com
+changetype: add
+cn: Engineering
+objectclass: groupOfUniqueNames
+uniqueMember: cn=margo,ou=Users,dc=magicdollar,dc=com
+uniqueMember: cn=lucas,ou=Users,dc=magicdollar,dc=com
+uniqueMember: cn=chanda,ou=Users,dc=magicdollar,dc=com
+uniqueMember: cn=ignacio,ou=Users,dc=magicdollar,dc=com
+
+dn: cn=IT,ou=Groups,dc=magicdollar,dc=com
+changetype: add
+cn: IT
+objectclass: groupOfUniqueNames
+uniqueMember: cn=sean,ou=Users,dc=magicdollar,dc=com
+uniqueMember: cn=bridget,ou=Users,dc=magicdollar,dc=com
+uniqueMember: cn=ruth,ou=Users,dc=magicdollar,dc=com
+
+dn: cn=Sales and Marketing,ou=Groups,dc=magicdollar,dc=com
+changetype: add
+cn: Sales and Marketing
+objectclass: groupOfUniqueNames
+uniqueMember: cn=jordan,ou=Users,dc=magicdollar,dc=com
+uniqueMember: cn=jennifer,ou=Users,dc=magicdollar,dc=com
+uniqueMember: cn=miles,ou=Users,dc=magicdollar,dc=com
+uniqueMember: cn=archer,ou=Users,dc=magicdollar,dc=com
