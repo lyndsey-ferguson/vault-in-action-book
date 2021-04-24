@@ -22,15 +22,13 @@ docker-compose up -d
 
 You can view the LDAP Data Information Trees (DITs) via the phpLDAPadmin server. Open a webbrowser window and navigate to http://localhost:8090/. Login using the "Login DN" `cn=admin,dc=magicdollar,dc=com` and the `LDAP_ADMIN_PASSWORD` value found in the `docker-compose.yml` file.
 
-![](phpLDAPadminLogin.jpg)
-_Logging into phpLDAPadmin_
+![](phpLDAPadminLogin.jpg "Logging into phpLDAPadmin")
 
 After authentication, you can navigate the tree by clicking the [+] link next to `dc=magicdollar,dc=com`.
 
-![](phpLDAPadmin_company_expanded.png)
-_Expanding the root node_
+![](phpLDAPadmin_company_expanded.png "Expanding the root node")
 
 Navigate among the different DITs by clicking the [+] links next to the different groups.
 
-![](DITs.jpg)
-_Groups and Users DITs expanded_
+![](DITs.jpg "Groups and Users DITs expanded")
+
