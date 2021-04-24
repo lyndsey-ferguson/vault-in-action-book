@@ -20,8 +20,15 @@ In order to spin up your own copy of the Magic Dollar OpenLDAP server, run the f
 docker-compose up -d
 ```
 
-You can view the LDAP Data Information Trees via the phpLDAPadmin server. Open a webbrowser window and navigate to http://localhost:8090/. Login using the "Login DN" `cn=admin,dc=magicdollar,dc=com` and the `LDAP_ADMIN_PASSWORD` value found in the `docker-compose.yml` file. After authentication, you can navigate the tree by clicking the [+] link next to `dc=magicdollar,dc=com`.
+You can view the LDAP Data Information Trees (DITs) via the phpLDAPadmin server. Open a webbrowser window and navigate to http://localhost:8090/. Login using the "Login DN" `cn=admin,dc=magicdollar,dc=com` and the `LDAP_ADMIN_PASSWORD` value found in the `docker-compose.yml` file.
 
-![](phpLDAPadmin_company_expanded.png)
+![](phpLDAPadminLogin.jpg "Logging into phpLDAPadmin")
 
+After authentication, you can navigate the tree by clicking the [+] link next to `dc=magicdollar,dc=com`.
+
+![](phpLDAPadmin_company_expanded.png "Expanding the root node")
+
+Navigate among the different DITs by clicking the [+] links next to the different groups.
+
+![](DITs.jpg "Groups and Users DITs expanded")
 
