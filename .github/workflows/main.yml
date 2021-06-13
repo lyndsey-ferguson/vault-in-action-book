@@ -49,7 +49,7 @@ jobs:
           export keystore_password=$(curl --request GET --header "X-Vault-Token: ${{ steps.beta_publisher.outputs.token }}" $vault_path_wallet | jq -r ".data.data.keystore_password")
           echo "::add-mask::$keystore_password"
           unsigned_aligned_apk_path="chapter08/app/build/outputs/apk/release/app-release-unsigned-aligned.apk"
-          ${{ steps.android_build_tools.outputs.dir }}/apksigner sign -ks beta.keystore --ks-pass env:keystore_password --out magic-dollar.apk "$unsigned_aligned_apk_path"
+          ${{ steps.android_build_tools.outputs.dir }}/apksigner sign -ks chapter08/beta.keystore --ks-pass env:keystore_password --out magic-dollar.apk "$unsigned_aligned_apk_path"
 
       - name: Archive Signed Beta App
         uses: actions/upload-artifact@v2
