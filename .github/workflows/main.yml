@@ -42,12 +42,6 @@ jobs:
           echo "run the command"
           echo "apksigner sign --ks beta.keystore --out magic-dollar.apk app-release-unsigned-aligned.apk"
 
-      - name: Archive Signed Beta App
-        uses: actions/upload-artifact@v2
-        with:
-          name: apks
-          path: magic-dollar.apk
-
       - name: Print MS App Center Upload Instructions
         run: |
           echo "After signing, upload to MS App Center with these commands:"
