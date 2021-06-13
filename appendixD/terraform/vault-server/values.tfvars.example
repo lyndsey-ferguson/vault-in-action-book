@@ -1,0 +1,29 @@
+namespace              = "VaultInActionSetup"
+root_domain_name       = "example.com"
+vault_server_subdomain = "vault"
+vault_token            = "<place vault root token here>"
+acme_certificate_email = "me@example.com"
+
+godaddy_api_key    = "ThisIsAnInvalidApiKey"
+godaddy_api_secret = "ThisIsAnInvalidApiSecret"
+
+
+domain_record_values = {
+  root_domain_ips = [
+    "10.1.0.0"
+  ],
+  vault_record = {
+    name = "vault"
+  }
+  other_records = [
+    {
+      name     = "www",
+      type     = "CNAME",
+      data     = "example.github.io",
+      ttl      = 3600,
+      port     = 0,
+      priority = 0,
+      weight   = 0,
+    }
+  ]
+}

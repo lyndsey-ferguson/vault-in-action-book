@@ -1,0 +1,9 @@
+*.tfvars
+.terraform
+*.log
+*.tfstate*
+*.key
+.gradle
+*.keystore
+*.apk
+build
