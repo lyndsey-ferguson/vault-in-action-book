@@ -22,7 +22,7 @@ module "security" {
   unique_resource_name   = random_pet.env.id
   is_production          = var.is_production
   acme_certificate_email = var.acme_certificate_email
-  vault_domain_name       = "${var.vault_server_subdomain}.${var.root_domain_name}"
+  vault_domain_name      = "${var.vault_server_subdomain}.${var.root_domain_name}"
   godaddy_api_key        = var.godaddy_api_key
   godaddy_api_secret     = var.godaddy_api_secret
 }

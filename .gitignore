@@ -4,6 +4,5 @@
 *.tfstate*
 *.key
 .gradle
-*.keystore
 *.apk
 build

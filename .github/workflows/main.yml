@@ -6,6 +6,7 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
+
       - name: Build the Wallet app
         run: |
           cd chapter08
@@ -30,17 +31,31 @@ jobs:
             ${{ steps.android_build_tools.outputs.dir }}/zipalign -v -p 4 "${unaligned_apk}" "${aligned_apk}"
           done
 
-      - name: Archive Debug App
+      - id: beta_publisher
+        name: Vault AppRole beta_publisher login
+        run: |
+          echo "{
+            \"role_id\" : \"${{ secrets.BETA_PUBLISHER_VAULT_ROLE_ID }}\",
+            \"secret_id\" : \"${{ secrets.BETA_PUBLISHER_VAULT_SECRET_ID }}\"
+          }" > approle_login_payload.json
+
+          local_token=$(curl --request POST --data @approle_login_payload.json "${{ secrets.VAULT_ADDR }}/v1/auth/approle/login" | jq -r ".auth.client_token")
+          echo "::add-mask::$local_token"
+          echo "::set-output name=token::$local_token"
+
+      - name: Sign Beta APK
+        run: |
+          vault_path_wallet="${{ secrets.VAULT_ADDR }}/v1/kv/data/users/margo/magic-dollar-wallet"
+          export keystore_password=$(curl --request GET --header "X-Vault-Token: ${{ steps.beta_publisher.outputs.token }}" $vault_path_wallet | jq -r ".data.data.keystore_password")
+          echo "::add-mask::$keystore_password"
+          unsigned_aligned_apk_path="chapter08/app/build/outputs/apk/release/app-release-unsigned-aligned.apk"
+          ${{ steps.android_build_tools.outputs.dir }}/apksigner sign -ks beta.keystore --ks-pass env:keystore_password --out magic-dollar.apk "$unsigned_aligned_apk_path"
+
+      - name: Archive Signed Beta App
         uses: actions/upload-artifact@v2
         with:
           name: apks
-          path: chapter08/app/build/outputs/apk/*/app-*aligned.apk
-
-      - name: Print ApkSigner Instructions
-        run: |
-          echo "Apks are ready to be downloaded and signed"
-          echo "run the command"
-          echo "apksigner sign --ks beta.keystore --out magic-dollar.apk app-release-unsigned-aligned.apk"
+          path: magic-dollar.apk
 
       - name: Print MS App Center Upload Instructions
         run: |
@@ -48,5 +63,3 @@ jobs:
           echo "# make sure you export the MS App Center API token"
           echo "# export MAGIC_DOLLAR_APK_API_TOKEN=<api token>"
           echo "./upload_to_ms_appcenter.sh magic-dollar.apk"
-
-
