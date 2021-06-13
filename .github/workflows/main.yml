@@ -1,0 +1,58 @@
+name: Android CI
+on: [push]
+jobs:
+  Build-Android-Developer-Version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      - name: Build the Wallet app
+        run: |
+          cd chapter08
+          ./gradlew build
+
+      - name: Android built-tools directory
+        id: android_build_tools
+        run: |
+          build_tools_version_dirs=( $(ls $ANDROID_SDK_ROOT/build-tools | sort --reverse) )
+          highest_build_tools_dir=${build_tools_version_dirs[0]}
+          echo "::set-output name=dir::$ANDROID_SDK_ROOT/build-tools/${highest_build_tools_dir}"
+
+      - name: zipalign the apks
+        run: |
+          apks=(chapter08/app/build/outputs/apk/*/app-*.apk)
+          for unaligned_apk in ${apks[@]}; do
+            output_dir=$(/bin/dirname $unaligned_apk)
+            filename=$(/bin/basename $unaligned_apk)
+            extension="${filename##*.}"
+            filename="${filename%.*}"
+            aligned_apk="${output_dir}/${filename}-aligned.${extension}"
+            ${{ steps.android_build_tools.outputs.dir }}/zipalign -v -p 4 "${unaligned_apk}" "${aligned_apk}"
+          done
+
+      - name: Archive Debug App
+        uses: actions/upload-artifact@v2
+        with:
+          name: apks
+          path: chapter08/app/build/outputs/apk/*/app-*aligned.apk
+
+      - name: Print ApkSigner Instructions
+        run: |
+          echo "Apks are ready to be downloaded and signed"
+          echo "run the command"
+          echo "apksigner sign --ks beta.keystore --out magic-dollar.apk app-release-unsigned-aligned.apk"
+
+      - name: Archive Signed Beta App
+        uses: actions/upload-artifact@v2
+        with:
+          name: apks
+          path: magic-dollar.apk
+
+      - name: Print MS App Center Upload Instructions
+        run: |
+          echo "After signing, upload to MS App Center with these commands:"
+          echo "# make sure you export the MS App Center API token"
+          echo "# export MAGIC_DOLLAR_APK_API_TOKEN=<api token>"
+          echo "./upload_to_ms_appcenter.sh magic-dollar.apk"
+
+
