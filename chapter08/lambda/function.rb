@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+#
 require 'json'
 
 require 'aws-sigv4'
@@ -9,20 +11,25 @@ def lambda_handler(event:, context:)
     Vault.address = "https://vault.lyndseyferguson.info:8200"
 
     puts "authenticating into Vault"
-    token = Vault.auth.aws_iam(
-        'BetaPublisherCredsUpdator',
+    secret = Vault.auth.aws_iam(
+        'beta_publisher-creds-updater',
         Aws::AssumeRoleCredentials.new(
             role_arn: "arn:aws:iam::492939359554:role/BetaPublsherCredsUpdator",
             role_session_name: "RotateBetaPublisherAppRoleSecretId"
         ),
         'vault.lyndseyferguson.info'
     )
-
-    puts "looking up token info"
-    puts Vault.auth_token.lookup(token)
+    Vault.token = secret.auth.client_token
+    puts Vault.auth_token.lookup_self.data
     { statusCode: 200, body: JSON.generate('Hello from Lambda!') }
 end
 
+if __FILE__ == $0
+  lambda_handler(event: {}, context: {})
+end
+
+# So, let's try to understand the issue. A role is not able to assume itself. So, my lambad has already assumed the role?
+# The documentation suggests that the the role is attached to the AWS resource.:q
 ## ERROR RESPONSE:
 # Response
 # {
