@@ -91,6 +91,8 @@ chmod 755 /opt/vault/ssl
 chown vault:vault /opt/vault/ssl
 chmod 710 /opt/vault/ssl/private
 chown vault:vault /opt/vault/ssl/private
+touch /var/log/vault.log
+chown vault:vault /var/log/vault.log
 
 cat << EOF > /lib/systemd/system/vault.service
 [Unit]
@@ -124,6 +126,8 @@ cat << EOF > /etc/vault.d/vault.hcl
 storage "s3" {
   bucket = "ldf-vault-in-action-bucket"
 }
+
+log_level = "Debug"
 
 listener "tcp" {
   address     = "0.0.0.0:8200"
