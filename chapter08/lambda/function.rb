@@ -5,12 +5,35 @@ require 'json'
 require 'aws-sigv4'
 require 'aws-sdk'
 require 'vault'
+require "rbnacl"
+require "base64"
+require 'octokit'
+require 'optparse'
+
+GITHUB_REPO = 'lyndsey-ferguson/vault-in-action-book'
+
+def create_box(public_key)
+  b64_key = RbNaCl::PublicKey.new(Base64.decode64(public_key[:key]))
+  {
+    key_id: public_key[:key_id],
+    box: RbNaCl::Boxes::Sealed.from_public_key(b64_key)
+  }
+end
+
+def update_secret_value(github_token, secret_key, secret_value)
+  github_client = Octokit::Client.new(:access_token => github_token)
+  repo = github_client.repository(GITHUB_REPO)
+  box = create_box(github_client.get("#{repo.url}/actions/secrets/public-key"))
+  encrypted = box[:box].encrypt(secret_value)
+  response = github_client.put("#{repo.url}/actions/secrets/#{secret_key}",
+    encrypted_value: Base64.strict_encode64(encrypted),
+    key_id: box[:key_id]
+  )
+end
 
 def lambda_handler(event:, context:)
-		puts "setting Vault address"
     Vault.address = "https://vault.lyndseyferguson.info:8200"
 
-    puts "authenticating into Vault"
     secret = Vault.auth.aws_iam(
         'beta_publisher-creds-updater',
         Aws::AssumeRoleCredentials.new(
@@ -20,8 +43,25 @@ def lambda_handler(event:, context:)
         'vault.lyndseyferguson.info'
     )
     Vault.token = secret.auth.client_token
-    puts Vault.auth_token.lookup_self.data
-    { statusCode: 200, body: JSON.generate('Hello from Lambda!') }
+
+    secret = Vault.logical.write('auth/approle/role/beta_publisher/secret-id')
+    new_secret_id = secret.data[:secret_id]
+    new_secret_id_accessor = secret.data[:secret_id_accessor]
+
+    secret = Vault.logical.read('kv/data/users/margo/magic-dollar-wallet-repo')
+    ghp_token = secret.data.dig(:data, :token)
+
+    update_secret_value(ghp_token, 'BETA_PUBLISHER_VAULT_SECRET_ID', new_secret_id)
+
+    secret_id_accessors = Vault.logical.list('auth/approle/role/beta_publisher/secret-id')
+    secret_id_accessors.each do |secret_id_accessor|
+      next if secret_id_accessor == new_secret_id_accessor
+      Vault.logical.write(
+        'auth/approle/role/beta_publisher/secret-id-accessor/destroy',
+        secret_id_accessor: secret_id_accessor
+      )
+    end
+    { statusCode: 200, body: JSON.generate("Destroyed #{secret_id_accessors.length} beta_publisher secret-id(s)") }
 end
 
 if __FILE__ == $0

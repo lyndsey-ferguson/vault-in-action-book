@@ -1,4 +1,9 @@
 source 'https://rubygems.org'
 
+gem 'octokit'
+gem 'ffi', '1.12.2'
+# gem 'rbnacl-libsodium'
+gem 'rbnacl'
 gem 'vault'
+
 
